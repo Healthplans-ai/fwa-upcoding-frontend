@@ -198,13 +198,19 @@ function Hero({ analytics, run }: { analytics: Analytics; run: UploadResult }) {
         <span className="hp-eyebrow text-hp-mint">
           Run · <span className="font-mono">{run.run_id}</span>
         </span>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
-          {analytics.flagged_providers.toLocaleString()} provider
-          {analytics.flagged_providers === 1 ? "" : "s"}{" "}
-          <span className="hp-underline text-hp-bg">flagged</span>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-hp-bg">
+          <span className="text-white">
+            {analytics.flagged_providers.toLocaleString()} provider
+            {analytics.flagged_providers === 1 ? "" : "s"}
+          </span>{" "}
+          <span className="hp-underline text-white">flagged</span>
         </h1>
-        <p className="mt-3 text-hp-bg/75 max-w-prose">
-          Across {analytics.total_providers.toLocaleString()} provider profiles —{" "}
+        <p className="mt-3 text-hp-bg/80 max-w-prose">
+          Across{" "}
+          <span className="text-white font-semibold tabular-nums">
+            {analytics.total_providers.toLocaleString()}
+          </span>{" "}
+          provider profiles —{" "}
           {(analytics.fraud_rate * 100).toFixed(1)}% fraud rate, an estimated
           {" "}${(analytics.exposure_usd / 1_000_000).toFixed(2)}M in exposure.
           Detected input shape:{" "}

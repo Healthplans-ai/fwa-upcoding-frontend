@@ -8,28 +8,23 @@ interface LogoProps {
 }
 
 const HEIGHT: Record<NonNullable<LogoProps["size"]>, string> = {
-  sm: "h-5", md: "h-6", lg: "h-8", xl: "h-12",
+  sm: "h-5", md: "h-6", lg: "h-8", xl: "h-10",
 };
 
-/**
- * healthplans.ai wordmark — text-based render so this app does not require
- * the proprietary PNG to live alongside the duplicate-detection front-end.
- * Same visual hierarchy: bold "healthplans" + thin ".ai" suffix.
- */
+const LOGO_SRC = "/Picture3.svg";
+
 export default function Logo({
   className = "", size = "md", tone = "dark", animated = false,
 }: LogoProps) {
-  const color =
-    tone === "light" ? "text-hp-bg"
-    : tone === "mint" ? "text-hp-mint"
-    : "text-hp-text";
-
   const Img = (
-    <span className={`inline-flex items-baseline font-display font-extrabold tracking-tight ${HEIGHT[size]} ${color} ${className}`}
-          style={{ letterSpacing: "-0.04em" }}>
-      <span className="text-[1.05em]">healthplans</span>
-      <span className="text-[0.7em] opacity-70 font-medium">.ai</span>
-    </span>
+    <img
+      src={LOGO_SRC}
+      alt="healthplans.ai"
+      className={`${HEIGHT[size]} w-auto object-contain object-left ${className} ${
+        tone === "light" ? "brightness-0 invert" : tone === "mint" ? "brightness-0 invert hue-rotate-90" : ""
+      }`}
+      draggable={false}
+    />
   );
 
   if (!animated) return Img;
