@@ -43,8 +43,8 @@ export default function KPITiles({ analytics }: Props) {
       accent: "text-hp-deep",
     },
     {
-      label: "Auto-flagged",
-      value: analytics?.by_verdict?.AUTO_FLAG ?? 0,
+      label: "Pend SIU",
+      value: analytics?.by_verdict?.PEND_SIU ?? 0,
       format: "int" as const,
       icon: ShieldX,
       ring: "from-hp-text via-hp-deep to-hp-sky",

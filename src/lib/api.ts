@@ -7,11 +7,14 @@
 export type Verdict = "PASS" | "MANUAL_REVIEW" | "PEND_SIU" | "AUTO_FLAG";
 export type Severity = "LOW" | "MED" | "HIGH" | "CRITICAL" | "NONE";
 
+export type FraudType = "upcoding" | "unbundling";
+
 export interface RuleHit {
   rule_id: string;
   severity: Severity;
   reason: string;
   surface: "claim" | "provider";
+  fraud_type: FraudType;
   evidence: Record<string, unknown>;
 }
 
@@ -19,6 +22,7 @@ export interface ProviderVerdict {
   provider: string;
   verdict: Verdict;
   max_severity: Severity;
+  fraud_types: FraudType[];
   hits: RuleHit[];
   claim_hits: Record<string, RuleHit[]>;
 }
@@ -57,6 +61,7 @@ export interface Analytics {
   exposure_usd: number;
   by_verdict: Partial<Record<Verdict, number>>;
   by_rule:    Record<string, number>;
+  by_fraud_type?: Partial<Record<FraudType, number>>;
   peer_baselines: Record<string, { mean: number; std: number; p25: number; p50: number; p75: number }>;
   detected_shape: string;
   profile_count: number;
@@ -80,6 +85,7 @@ export interface RuleSpec {
   severity: Severity;
   action: Verdict;
   reason_code?: string;
+  fraud_type?: FraudType;
 }
 
 // In dev, leave BASE empty so the Vite proxy (vite.config.ts) forwards /api

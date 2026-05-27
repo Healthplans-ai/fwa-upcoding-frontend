@@ -1,6 +1,7 @@
 import { RuleSpec } from "../lib/api";
 import { describe } from "../lib/ruleExplanations";
 import SeverityBadge from "./SeverityBadge";
+import FraudTypeBadge from "./FraudTypeBadge";
 
 interface Props { rules: RuleSpec[]; }
 
@@ -43,6 +44,7 @@ function Section({ title, subtitle, items }: { title: string; subtitle: string; 
                 <span className="pill bg-hp-text text-hp-sky border-hp-text font-mono text-xs">{r.id}</span>
                 <SeverityBadge level={r.severity} size="sm" />
                 <SeverityBadge level={r.action as any} size="sm" />
+                {r.fraud_type && <FraudTypeBadge type={r.fraud_type} size="sm" />}
                 {r.surface && (
                   <span className="pill bg-hp-light border-hp-sky/40 text-hp-deep">{r.surface}</span>
                 )}

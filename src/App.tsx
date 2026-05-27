@@ -86,6 +86,7 @@ export default function App() {
                 provider: selected,
                 verdict: "PASS",
                 max_severity: "NONE",
+                fraud_types: [],
                 hits: [],
                 claim_hits: {},
               }

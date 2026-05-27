@@ -4,6 +4,7 @@ import { ChevronRight, Search } from "lucide-react";
 import { ProviderProfile, ProviderVerdict, Verdict } from "../lib/api";
 import { FEATURED_PROVIDER_ID } from "../lib/providerStoryData";
 import SeverityBadge from "./SeverityBadge";
+import FraudTypeBadge from "./FraudTypeBadge";
 
 interface Props {
   verdicts: ProviderVerdict[];
@@ -15,8 +16,10 @@ const VERDICT_ORDER: Record<Verdict, number> = {
   AUTO_FLAG: 0, PEND_SIU: 1, MANUAL_REVIEW: 2, PASS: 3,
 };
 
+type FilterId = "ALL" | Verdict | "FT_UPCODING" | "FT_UNBUNDLING";
+
 export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) {
-  const [filter, setFilter] = useState<"ALL" | Verdict>("ALL");
+  const [filter, setFilter] = useState<FilterId>("ALL");
   const [query, setQuery] = useState("");
 
   const byProvider = useMemo(() => {
@@ -25,9 +28,16 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
     return m;
   }, [profiles]);
 
+  const matchesFilter = (v: ProviderVerdict): boolean => {
+    if (filter === "ALL") return true;
+    if (filter === "FT_UPCODING") return v.fraud_types?.includes("upcoding");
+    if (filter === "FT_UNBUNDLING") return v.fraud_types?.includes("unbundling");
+    return v.verdict === filter;
+  };
+
   const rows = useMemo(() => {
     const filtered = verdicts.filter(v => {
-      if (filter !== "ALL" && v.verdict !== filter) return false;
+      if (!matchesFilter(v)) return false;
       if (query && !v.provider.toLowerCase().includes(query.toLowerCase())) return false;
       return true;
     });
@@ -41,12 +51,13 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
     return filtered;
   }, [verdicts, filter, query]);
 
-  const tabs: Array<{ id: "ALL" | Verdict; label: string; count: number }> = [
+  const tabs: Array<{ id: FilterId; label: string; count: number }> = [
     { id: "ALL", label: "All", count: verdicts.length },
-    { id: "AUTO_FLAG", label: "Auto-flag", count: verdicts.filter(v => v.verdict === "AUTO_FLAG").length },
     { id: "PEND_SIU", label: "Pend SIU", count: verdicts.filter(v => v.verdict === "PEND_SIU").length },
     { id: "MANUAL_REVIEW", label: "Manual review", count: verdicts.filter(v => v.verdict === "MANUAL_REVIEW").length },
     { id: "PASS", label: "Pass", count: verdicts.filter(v => v.verdict === "PASS").length },
+    { id: "FT_UPCODING", label: "Upcoding", count: verdicts.filter(v => v.fraud_types?.includes("upcoding")).length },
+    { id: "FT_UNBUNDLING", label: "Unbundling", count: verdicts.filter(v => v.fraud_types?.includes("unbundling")).length },
   ];
 
   return (
@@ -84,6 +95,7 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
             <tr>
               <th className="text-left px-4 py-2.5">Provider</th>
               <th className="text-left px-4 py-2.5">Verdict</th>
+              <th className="text-left px-4 py-2.5">Fraud type</th>
               <th className="text-right px-4 py-2.5">IP claims</th>
               <th className="text-right px-4 py-2.5">Total IP reimb.</th>
               <th className="text-right px-4 py-2.5">Unique DRGs</th>
@@ -101,6 +113,16 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
                     onClick={() => onSelect(v.provider)}>
                   <td className="px-4 py-2.5 font-mono font-bold">{v.provider}</td>
                   <td className="px-4 py-2.5"><SeverityBadge level={v.verdict} /></td>
+                  <td className="px-4 py-2.5">
+                    <div className="flex flex-wrap gap-1">
+                      {(v.fraud_types ?? []).map(ft => (
+                        <FraudTypeBadge key={ft} type={ft} size="sm" />
+                      ))}
+                      {(!v.fraud_types || v.fraud_types.length === 0) && (
+                        <span className="text-hp-text/40">—</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-2.5 text-right tabular-nums">
                     {fmtNum(p?.ip_claim_count)}
                   </td>
@@ -134,7 +156,7 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
               );
             })}
             {rows.length === 0 && (
-              <tr><td colSpan={8} className="px-4 py-8 text-center text-hp-text/50">
+              <tr><td colSpan={9} className="px-4 py-8 text-center text-hp-text/50">
                 No providers match the current filter.
               </td></tr>
             )}

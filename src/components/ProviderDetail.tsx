@@ -16,6 +16,7 @@ import {
   isFeaturedProvider,
 } from "../lib/providerStoryData";
 import SeverityBadge from "./SeverityBadge";
+import FraudTypeBadge from "./FraudTypeBadge";
 
 interface Props {
   verdict: ProviderVerdict;
@@ -128,8 +129,11 @@ function SummaryModal({
             <p id="provider-summary-title" className="font-mono text-lg font-extrabold truncate">
               {verdict.provider}
             </p>
-            <div className="mt-1">
+            <div className="mt-1 flex flex-wrap items-center gap-1">
               <SeverityBadge level={verdict.verdict} />
+              {(verdict.fraud_types ?? []).map(ft => (
+                <FraudTypeBadge key={ft} type={ft} size="sm" />
+              ))}
             </div>
           </div>
           <button
@@ -219,7 +223,12 @@ function DeepModal({
             </p>
             <p className="font-mono text-xl font-extrabold truncate">{verdict.provider}</p>
           </div>
-          <SeverityBadge level={verdict.verdict} />
+          <div className="flex flex-wrap items-center gap-1 justify-end">
+            <SeverityBadge level={verdict.verdict} />
+            {(verdict.fraud_types ?? []).map(ft => (
+              <FraudTypeBadge key={ft} type={ft} size="sm" />
+            ))}
+          </div>
           <button
             type="button"
             onClick={onClose}
@@ -496,6 +505,7 @@ function RuleHitCard({ hit }: { hit: RuleHit }) {
           {hit.rule_id}
         </span>
         <SeverityBadge level={hit.severity} size="sm" />
+        {hit.fraud_type && <FraudTypeBadge type={hit.fraud_type} size="sm" />}
         <span className="font-mono text-xs text-hp-text/55 ml-auto">{hit.reason}</span>
       </div>
       <h4 className="font-extrabold text-sm mb-1">{exp.title}</h4>

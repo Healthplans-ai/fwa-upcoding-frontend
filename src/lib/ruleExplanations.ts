@@ -85,7 +85,7 @@ export const RULE_EXPLANATIONS: Record<string, RuleExplanation> = {
       "not the entire CMS catalog. A provider using a unique DRG for nearly every claim is testing many " +
       "classifications to find the highest-paying one. CMS PEPPER ships this exact metric to every short-" +
       "term acute-care hospital quarterly as a compliance-target area.",
-    action: "PEND_SIU at the lower end; CRITICAL/AUTO_FLAG if drg-to-claim ratio ≥ 0.9.",
+    action: "PEND_SIU. A drg-to-claim ratio ≥ 0.9 raises the hit severity to CRITICAL for ranking, but V1 never auto-blocks — it still routes to SIU.",
     industry_reference: "CMS PEPPER — unique-DRG analysis",
   },
   U7: {
