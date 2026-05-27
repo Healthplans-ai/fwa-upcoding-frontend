@@ -73,18 +73,22 @@ export function buildProviderSummary(
   verdict: ProviderVerdict,
   profile: ProviderProfile | null,
 ): ProviderSummary {
+  const u6 = verdict.hits.find(h => h.rule_id === "U6");
   if (isFeaturedProvider(verdict.provider)) {
     const specialties = featuredSpecialtyNames().length;
     const claims = Math.round(Number(profile?.ip_claim_count) || 62);
     const drgs = Math.round(Number(profile?.ip_unique_drg_codes) || 58);
+    const ratio = claims > 0 ? (drgs / claims).toFixed(2) : "—";
+    const drgLine = u6
+      ? `Rule U6 fired: DRG-to-claim ratio ${ratio} (${drgs} unique DRGs / ${claims} claims).`
+      : `DRG-to-claim ratio ${ratio} (${drgs} unique DRGs / ${claims} claims).`;
+
     return {
       headline: "Upcoding pattern: one attending, many unrelated specialties",
       explanation:
-        `${FEATURED_ATTENDING} is the attending on every inpatient claim, yet DRGs span ` +
-        `${specialties} unrelated specialties with ${drgs} distinct DRGs across only ${claims} claims. ` +
-        "No single physician can hold board certification and hospital privileges for cardiac surgery, " +
-        "orthopedics, gyn-oncology, psychiatry, and rehab at once — this is a classic severity-shifting / " +
-        "DRG-shopping fingerprint.",
+        `${drgLine} ${FEATURED_ATTENDING} is the attending on every sampled claim, yet DRGs span ` +
+        `${specialties} unrelated specialties. No single physician can hold board certification and ` +
+        "hospital privileges for cardiac surgery, orthopedics, gyn-oncology, psychiatry, and rehab at once.",
       bullets: [
         `${claims} claims · ${drgs} unique DRGs · ${specialties} specialties`,
         `100% of sampled claims → ${FEATURED_ATTENDING}`,

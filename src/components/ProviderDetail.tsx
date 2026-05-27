@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, AlertTriangle, ShieldX, ScanSearch, Activity, ArrowRight,
@@ -43,14 +43,14 @@ export default function ProviderDetail({ verdict, profile, onClose }: Props) {
   const verdictTone = useVerdictTone(verdict.verdict);
 
   return (
-    <>
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 sm:p-6">
       <motion.button
         type="button"
         aria-label="Close"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-40 bg-hp-text/45 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-hp-text/45 backdrop-blur-[2px]"
         onClick={onClose}
       />
 
@@ -76,7 +76,17 @@ export default function ProviderDetail({ verdict, profile, onClose }: Props) {
           />
         )}
       </AnimatePresence>
-    </>
+    </div>
+  );
+}
+
+function ModalCenter({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={`relative z-50 flex max-h-[min(90vh,calc(100vh-2rem))] w-full flex-col pointer-events-auto ${className ?? ""}`}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -96,24 +106,24 @@ function SummaryModal({
   const Icon = verdictTone.icon;
 
   return (
-    <motion.div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="provider-summary-title"
-      initial={{ opacity: 0, scale: 0.96, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96, y: 12 }}
-      transition={{ duration: 0.22 }}
-      className="fixed left-1/2 top-1/2 z-50 w-[min(100%-2rem,28rem)] -translate-x-1/2 -translate-y-1/2"
-    >
-      <div className="card shadow-raised overflow-hidden">
+    <ModalCenter className="max-w-md">
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="provider-summary-title"
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.22 }}
+        className="card shadow-raised overflow-hidden w-full"
+      >
         <div className="px-5 py-4 border-b border-hp-text/8 flex items-start gap-3 bg-hp-light/40">
           <div className={`w-11 h-11 rounded-2xl grid place-items-center shrink-0 ${verdictTone.bg} ${verdictTone.text}`}>
             <Icon className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[10px] uppercase tracking-wider text-hp-text/55 font-bold">
-              Why this is flagged
+              {verdict.verdict === "PASS" ? "Provider review" : "Why this is flagged"}
             </p>
             <p id="provider-summary-title" className="font-mono text-lg font-extrabold truncate">
               {verdict.provider}
@@ -157,8 +167,8 @@ function SummaryModal({
             Dismiss
           </button>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </ModalCenter>
   );
 }
 
@@ -183,16 +193,16 @@ function DeepModal({
   const claimCount = deepData.totalClaims;
 
   return (
-    <motion.div
-      role="dialog"
-      aria-modal="true"
-      initial={{ opacity: 0, scale: 0.98, y: 16 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98, y: 16 }}
-      transition={{ duration: 0.25 }}
-      className="fixed inset-4 sm:inset-6 md:inset-10 z-50 flex flex-col pointer-events-none"
-    >
-      <div className="card shadow-raised flex flex-col max-h-full overflow-hidden pointer-events-auto">
+    <ModalCenter className="max-w-5xl">
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        initial={{ opacity: 0, scale: 0.98, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.98, y: 16 }}
+        transition={{ duration: 0.25 }}
+        className="card shadow-raised flex flex-col w-full max-h-[min(90vh,calc(100vh-2rem))] overflow-hidden"
+      >
         {/* Header */}
         <div className="shrink-0 px-5 py-4 border-b border-hp-text/8 flex items-center gap-3 bg-hp-light/30">
           <button
@@ -472,8 +482,8 @@ function DeepModal({
             )}
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </ModalCenter>
   );
 }
 
