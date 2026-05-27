@@ -82,7 +82,14 @@ export interface RuleSpec {
   reason_code?: string;
 }
 
-const BASE = "";
+// In dev, leave BASE empty so the Vite proxy (vite.config.ts) forwards /api
+// to localhost:8000 and avoids CORS. In a production build (Vercel) there is
+// no proxy, so we call the deployed backend origin directly from
+// VITE_API_BASE_URL. The backend sets CORS allow_origins=["*"], so the
+// cross-origin Vercel → Railway calls are permitted.
+const BASE = import.meta.env.DEV
+  ? ""
+  : ((import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "").replace(/\/+$/, "");
 
 export async function getRules(): Promise<RuleSpec[]> {
   const r = await fetch(`${BASE}/api/rules`);
