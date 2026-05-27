@@ -78,10 +78,18 @@ export default function App() {
       <Footer />
 
       <AnimatePresence>
-        {selected && verdictByProvider.get(selected) && (
+        {selected && (
           <ProviderDetail
             key={selected}
-            verdict={verdictByProvider.get(selected)!}
+            verdict={
+              verdictByProvider.get(selected) ?? {
+                provider: selected,
+                verdict: "PASS",
+                max_severity: "NONE",
+                hits: [],
+                claim_hits: {},
+              }
+            }
             profile={profileByProvider.get(selected) ?? null}
             onClose={() => setSelected(null)}
           />
@@ -165,8 +173,8 @@ function Dashboard({
             Provider <span className="hp-underline">verdicts</span>
           </h2>
           <p className="text-sm text-hp-text/65 mt-1">
-            Click a row to see <strong>why</strong> the provider was flagged — rule by rule,
-            with evidence values and the upcoding explanation.
+            Click a row for a quick <strong>why flagged</strong> summary, then open the
+            case file for claim-level evidence and rule hits.
           </p>
         </div>
         <ProvidersTable

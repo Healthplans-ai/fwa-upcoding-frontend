@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ChevronRight, Search } from "lucide-react";
 
 import { ProviderProfile, ProviderVerdict, Verdict } from "../lib/api";
+import { FEATURED_PROVIDER_ID } from "../lib/providerStoryData";
 import SeverityBadge from "./SeverityBadge";
 
 interface Props {
@@ -31,6 +32,8 @@ export default function ProvidersTable({ verdicts, profiles, onSelect }: Props) 
       return true;
     });
     filtered.sort((a, b) => {
+      if (a.provider === FEATURED_PROVIDER_ID) return -1;
+      if (b.provider === FEATURED_PROVIDER_ID) return 1;
       const va = VERDICT_ORDER[a.verdict] - VERDICT_ORDER[b.verdict];
       if (va !== 0) return va;
       return b.hits.length - a.hits.length;
