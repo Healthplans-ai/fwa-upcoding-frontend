@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   healthplans.ai theme — identical to fwa-dedup-front so both
+   dashboards render as one product family.
+   ============================================================ */
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    font-family: "Arimo", "Figtree", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background-color: #FBFCFA;
+    color: #0D1A13;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  ::selection { background: rgba(10,240,132,0.30); color: #0D1A13; }
+  h1, h2, h3, h4, h5 {
+    font-family: "Figtree", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+    line-height: 1.08;
+    color: #0D1A13;
+  }
+}
+
+@layer components {
+  .card {
+    background: #FFFFFF;
+    border: 1px solid rgba(13,26,19,0.06);
+    border-radius: 1.5rem;
+    box-shadow: 0 1px 2px rgba(13,26,19,0.04), 0 12px 32px -16px rgba(13,26,19,0.10);
+  }
+  .card-dark {
+    background: #0D1A13;
+    color: #FBFCFA;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 1.5rem;
+  }
+  .card-sky {
+    background: #A2CFE1;
+    color: #0D1A13;
+    border-radius: 1.5rem;
+  }
+  .card-light {
+    background: #DEEDF3;
+    color: #0D1A13;
+    border-radius: 1.5rem;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-9 py-3 rounded-pill
+           bg-hp-black text-hp-sky text-base font-medium
+           transition-all hover:bg-hp-deep hover:-translate-y-px
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0;
+    min-height: 47px;
+  }
+  .btn-mint {
+    @apply inline-flex items-center justify-center gap-2 px-9 py-3 rounded-pill
+           bg-hp-mint text-hp-text text-base font-bold
+           transition-all hover:brightness-95 hover:-translate-y-px
+           shadow-mint;
+    min-height: 47px;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-9 py-3 rounded-pill
+           bg-transparent border border-hp-text text-hp-text text-base font-medium
+           transition-all hover:bg-hp-text hover:text-hp-sky;
+    min-height: 47px;
+  }
+  .btn-compact {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full
+           bg-hp-text text-hp-sky text-sm font-semibold
+           transition-all hover:bg-hp-deep;
+  }
+}
+
+@layer utilities {
+  .hp-underline {
+    background-image: linear-gradient(transparent 80%, #0AF084 80%, #0AF084 96%, transparent 96%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .hp-eyebrow {
+    @apply inline-block text-base font-bold tracking-tight text-hp-text;
+  }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.7; }
+  70%  { transform: scale(1.4);  opacity: 0;   }
+  100% { transform: scale(1.4);  opacity: 0;   }
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background-color: rgba(10,240,132,0.5);
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #F2F6F4 0%, #DEEDF3 40%, #F2F6F4 80%);
+  background-size: 800px 100%;
+  animation: shimmer 2.4s linear infinite;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(13,26,19,0.15); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(13,26,19,0.30); }
